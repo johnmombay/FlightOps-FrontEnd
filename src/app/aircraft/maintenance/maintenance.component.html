@@ -1,0 +1,188 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Maintenance Type</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body" style="padding: 5%, 0%;">
+
+                        <div class="col-md-12" *ngIf="show_maintenanceList">
+                            <!-- <div class="card"> -->
+                                <!-- <div class="card-header">
+                                    <h4 class="card-title"> Maintenance List </h4>
+                                    <p class="card-category"> List of Maintenance added </p>
+                                </div> -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-9">
+
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row">
+                                                <p style="margin-right: 5%;">
+                                                    <mat-form-field>
+                                                        <mat-label>Search</mat-label>
+                                                        <input matInput placeholder="">
+                                                        <mat-icon matSuffix>search</mat-icon>
+                                                        <!-- <mat-hint>Hint</mat-hint> -->
+                                                    </mat-form-field>
+                                                </p>
+                                                <button mat-icon-button color="primary"
+                                                    (click)="show_maintenanceList = false; nullData()">
+                                                    <mat-icon>add</mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <mat-table [dataSource]="maintenance_dataSource" class="mat-elevation-z8">
+
+                                        <ng-container matColumnDef="id">
+                                            <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="maintenanceCode">
+                                            <mat-header-cell *matHeaderCellDef> Maintenance Code </mat-header-cell>
+                                            <mat-cell *matCellDef="let element"> {{element.maintenanceCode}} </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="maintenanceName">
+                                            <mat-header-cell *matHeaderCellDef> Maintenance name </mat-header-cell>
+                                            <mat-cell *matCellDef="let element">
+                                                {{element.maintenanceName}} </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="durationHours">
+                                            <mat-header-cell *matHeaderCellDef> Durations(hours) </mat-header-cell>
+                                            <mat-cell *matCellDef="let element">
+                                                {{element.durationHours}} </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="aircraftType">
+                                            <mat-header-cell *matHeaderCellDef> Aircraft</mat-header-cell>
+                                            <mat-cell *matCellDef="let element">
+                                                {{element.aircraftTypeName}} </mat-cell>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="actions">
+                                            <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                                            <mat-cell *matCellDef="let element">
+                                                <button mat-icon-button color="primary" (click)="show_maintenanceList = false; selectMaintenance(element)">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+                                                <button mat-icon-button color="warn" (click)="deleteMaintenance(element.id)" >
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </mat-cell>
+                                        </ng-container>
+
+                                        <mat-header-row *matHeaderRowDef="maintenance_displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: maintenance_displayedColumns;" matRipple
+                                            class="element-row"
+                                           >
+                                        </mat-row>
+                                      
+                                    </mat-table>
+
+                                </div>
+                            <!-- </div> -->
+                        </div>
+
+                        <div class="col-md-8" *ngIf="!show_maintenanceList">
+                            <!-- <div class="col-md-8"> -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Add Maintenance</h4>
+                                    <p class="card-category">Input new Maintenance details</p>
+                                </div>
+                                <div class="card-body">
+                                    <form #f = "ngForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                    <div class="col-md-6">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Maintenance Code" name="maintenanceCode" [(ngModel)] = "selectedMaintainanceList.maintenanceCode"
+                                                                >
+                                                        </mat-form-field>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6">
+    
+                                                    <div class="col-md-6">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Maintenance Name" name="maintenanceName" [(ngModel)] = "selectedMaintainanceList.maintenanceName"
+                                                                >
+                                                        </mat-form-field>
+                                                    </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                    <div class="col-md-6">
+                                                        <mat-form-field class="example-full-width">
+                                                            <input matInput placeholder="Duration Hours" name="durationHours" [(ngModel)] = "selectedMaintainanceList.durationHours"
+                                                                >
+                                                        </mat-form-field>
+                                                    </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <mat-form-field>
+                                                    <mat-select placeholder="Aircraft"
+                                                        [(ngModel)]="selectedMaintainanceList.aircraftType" name="aircraftType" (selectionChange)="aircraftSelected($event.value) ">
+                                                        <mat-option *ngFor="let type of aircraftTypeData"
+                                                            [value]="type.id">
+                                                            <span
+                                                                style="text-align: left">{{type.aircraftTypeName}}</span><span
+                                                                style="text-align: right">({{type.NoOfAircraft}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+            
+                                                </div>
+                                                
+                                            </div>
+
+  
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                        (click)="show_maintenanceList = true;">
+                                        Cancel
+                                    </button>
+                                    <button mat-raised-button type="submit"
+                                        class="btn btn-indigo pull-right"
+                                        (click)="show_maintenanceList = true; createOrUpdateAircraftList(f) ">
+                                        Save
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+          
+            
+                    </div>
+
+                </div>
+
+            </div>                                    
+
+        </div>
+    </div>
+</div>

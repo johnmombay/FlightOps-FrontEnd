@@ -1,0 +1,200 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Crew</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body" style="padding: 5%, 0%;">
+
+                        <div class="col-md-12" *ngIf="!show_crewList">
+                            <form #CrewForm="ngForm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="First Name" name="FirstName"
+                                                [ngModel]="selectedData.firstName" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Middle Name" name="MiddleName"
+                                                [ngModel]="selectedData.middleName" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="LastName" name="LastName"
+                                                [ngModel]="selectedData.lastName" required>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <input type="text" placeholder="Gender" aria-label="Gender" matInput name="Gender"
+                                                [ngModel]="selectedData.gender" required [matAutocomplete]="auto">
+                                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                <mat-option value="Male">Male</mat-option>
+                                                <mat-option value="Female">Female</mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field color="primary">
+                                            <mat-label>BirthDate</mat-label>
+                                            <input matInput [matDatepicker]="BirthDate" (click)="BirthDate.open()"
+                                                name="BirthDate"
+                                                [ngModel]="selectedData.birthdate" required>
+                                            <mat-datepicker-toggle matSuffix [for]="BirthDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #BirthDate color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Position</mat-label>
+                                            <mat-select name="CrewPositionID"
+                                            [ngModel]="selectedData.crewPositionID" required>
+                                                <mat-option *ngFor="let position of PositionList" [value]="position.id">
+                                                    {{position.positionName}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Passport No" name="PassportNo"
+                                                [ngModel]="selectedData.passportNo" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field color="primary">
+                                            <mat-label>Passport Expirty Date</mat-label>
+                                            <input matInput [matDatepicker]="PassportExpiryDate" (click)="PassportExpiryDate.open()"
+                                                name="PassportExpiryDate"
+                                                [ngModel]="selectedData.passportExpiryDate" required>
+                                            <mat-datepicker-toggle matSuffix [for]="PassportExpiryDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #PassportExpiryDate color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                
+
+
+                                <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                    (click)="show_crewList = true;">
+                                    Cancel
+                                </button>
+                                <button mat-raised-button type="submit" class="btn btn-indigo pull-right"
+                                     [disabled]="!CrewForm.form.valid" (click)="save(CrewForm)">
+                                    Save
+                                </button>
+                                
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-12" *ngIf="show_crewList">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>Crew Type</mat-label>
+                                        <mat-select name="CrewTypeID" [value]="0">
+                                        <mat-option  [value]="0">All Crew</mat-option>
+                                            <mat-option  [value]="1">Flight Deck Crew</mat-option>
+                                            <mat-option  [value]="2">Cabin Crew</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-5">
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <p style="margin-right: 5%;">
+                                            <mat-form-field>
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="" (input)="applyFilter($event)"
+                                                    placeholder="" #input>
+                                                <mat-icon matSuffix>search</mat-icon>
+                                                <!-- <mat-hint>Hint</mat-hint> -->
+                                            </mat-form-field>
+                                        </p>
+                                        <button mat-icon-button color="primary"
+                                            (click)="selectedData = null; show_crewList = false;">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <mat-table [dataSource]="datasource" class="mat-elevation-z8" >
+
+                                <ng-container matColumnDef="noRecord">
+                                    <td mat-footer-cell *matFooterCellDef [attr.colspan]="6">No records found.</td>
+                              </ng-container>
+
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="LastName">
+                                    <mat-header-cell *matHeaderCellDef> Last Name </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="FirstName">
+                                    <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.firstName}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="MiddleName">
+                                    <mat-header-cell *matHeaderCellDef> Middle Name </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.middleName}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Position">
+                                    <mat-header-cell *matHeaderCellDef> Position </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.crewPositionID}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="actions">
+                                    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        <button mat-icon-button color="primary"
+                                            (click)="select(element)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="remove(element)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                <ng-template *ngIf="datasource.length === 0">
+                                    <tr mat-footer-row *matFooterRowDef="['noRecord']"></tr>
+                                </ng-template>
+                                
+                            </mat-table>
+                           
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

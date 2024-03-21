@@ -1,0 +1,118 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Airport Category</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body" style="padding: 5%, 0%;">
+
+                        <div class="col-md-8" *ngIf="!show_categoryList">
+                            <form #categoryData="ngForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Category" name="categoryNumber"
+                                                [ngModel]="categoryInfo.categoryNumber" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Category Name" name="categoryName"
+                                                [ngModel]="categoryInfo.categoryName" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+
+                                <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                    (click)="show_categoryList = true;">
+                                    Cancel
+                                </button>
+                                <button mat-raised-button type="submit" class="btn btn-indigo pull-right"
+                                    *ngIf="!isUpdate" [disabled]="!categoryData.form.valid"
+                                    (click)="save(categoryData)">
+                                    Save
+                                </button>
+                                <button mat-raised-button type="submit" class="btn btn-indigo pull-right"
+                                    *ngIf="isUpdate" [disabled]="!categoryData.form.valid"
+                                    (click)="update(categoryData)">
+                                    Update
+                                </button>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-12" *ngIf="show_categoryList">
+                            <div class="row">
+                                <div class="col-md-9">
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <p style="margin-right: 5%;">
+                                            <mat-form-field>
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="" (input)="applyFilter($event)"
+                                                    placeholder="" #input>
+                                                <mat-icon matSuffix>search</mat-icon>
+                                                <!-- <mat-hint>Hint</mat-hint> -->
+                                            </mat-form-field>
+                                        </p>
+                                        <button mat-icon-button color="primary"
+                                            (click)="isUpdate = false; show_categoryList = false;">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="categoryNumber">
+                                    <mat-header-cell *matHeaderCellDef> Category </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.categoryNumber}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="categoryName">
+                                    <mat-header-cell *matHeaderCellDef> Category Name </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.categoryName}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="actions">
+                                    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        <button mat-icon-button color="primary"
+                                            (click)="isUpdate = true; categoryInfo = element; show_categoryList = false;">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="remove(element)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            </mat-table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

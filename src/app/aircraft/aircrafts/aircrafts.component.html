@@ -1,0 +1,279 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Aircraft List</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <!-- <div class="card-body" style="padding: 5%, 0%;"> -->
+
+                    <div class="col-md-10" *ngIf="!show_aircraftList">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Add Aircraft Type</h4>
+                                <p class="card-category">Input new aircraft type details</p>
+                            </div>
+                            <div class="card-body">
+                                <form #aircraftData="ngForm">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Aircraft" name="aircraftTypeId"
+                                                    [ngModel]="aircraftInfo.aircraftTypeId" required>
+                                                    <mat-option *ngFor="let type of aircraftTypeData" [value]="type.id">
+                                                        <span style="text-align: left">{{type.aircraftTypeName}}</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="First Capacity" name="firstCapacity"
+                                                    [(ngModel)]="aircraftInfo.firstCapacity" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Business Capacity" name="businessCapacity"
+                                                    [(ngModel)]="aircraftInfo.businessCapacity" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Perconomy Capacity" name="peconomyCapacity"
+                                                    [(ngModel)]="aircraftInfo.peconomyCapacity" required>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Economy Capacity" name="economyCapacity"
+                                                    [(ngModel)]="aircraftInfo.economyCapacity" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Cargo Capacity" name="cargoCapacity"
+                                                    [(ngModel)]="aircraftInfo.cargoCapacity" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Registration" name="registration"
+                                                    [(ngModel)]="aircraftInfo.registration" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Country of Registration"
+                                                    name="countryOfRegistration"
+                                                    [ngModel]="aircraftInfo.countryOfRegistration" required>
+                                                    <mat-option *ngFor="let country of countryData"
+                                                        [value]="country.id">
+                                                        <span style="text-align: left">{{country.countryName}}</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field color="primary">
+                                                <mat-label>Date of Registration</mat-label>
+                                                <input matInput [matDatepicker]="picker1" (click)="picker1.open()"
+                                                    name="dateOfRegistration"
+                                                    [ngModel]="aircraftInfo.dateOfRegistration" required>
+                                                <mat-datepicker-toggle matSuffix [for]="picker1">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Airport Category" name="airportCategoryId"
+                                                    [ngModel]="aircraftInfo.airportCategoryId" required>
+                                                    <mat-option *ngFor="let category of categoryData"
+                                                        [value]="category.id">
+                                                        <span style="text-align: left">{{category.categoryName}}</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Maximum Flight Hours"
+                                                    name="maximumFlightHours"
+                                                    [ngModel]="aircraftInfo.maximumFlightHours" required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Status" name="status"
+                                                    [ngModel]="aircraftInfo.status" required>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                        (click)="show_aircraftList = true;">
+                                        Cancel
+                                    </button>
+                                    <button mat-raised-button type="submit" class="btn btn-indigo pull-right"
+                                        *ngIf="!isUpdate" [disabled]="!aircraftData.form.valid"
+                                        (click)="save(aircraftData)">
+                                        Save
+                                    </button>
+                                    <button mat-raised-button type="submit" class="btn btn-indigo pull-right"
+                                        *ngIf="isUpdate" [disabled]="!aircraftData.form.valid"
+                                        (click)="update(aircraftData)">
+                                        Update
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" *ngIf="show_aircraftList">
+                        <!-- <div class="card"> -->
+                        <!-- <div class="card-header">
+                                    <h4 class="card-title">Aircraft List</h4>
+                                    <p class="card-category">List of aircraft types added</p>
+                                </div> -->
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-md-9">
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <p style="margin-right: 5%;">
+                                            <mat-form-field>
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="" (input)="applyFilter($event)"
+                                                    placeholder="" #input>
+                                                <mat-icon matSuffix>search</mat-icon>
+                                                <!-- <mat-hint>Hint</mat-hint> -->
+                                            </mat-form-field>
+                                        </p>
+                                        <button mat-icon-button color="primary"
+                                            (click)="isUpdate = false; show_aircraftList = false; aircraftInfo = {};">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="aircraftType">
+                                    <mat-header-cell *matHeaderCellDef> Aircraft</mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.aircraftType.aircraftTypeName + "("+ element.registration + ")"}}
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="firstCapacity">
+                                    <mat-header-cell *matHeaderCellDef> First Capacity </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.firstCapacity}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="businessCapacity">
+                                    <mat-header-cell *matHeaderCellDef> Business Capacity </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.businessCapacity}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="peconomyCapacity">
+                                    <mat-header-cell *matHeaderCellDef> Peconomy Capacity </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.peconomyCapacity}} </mat-cell>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="economyCapacity">
+                                    <mat-header-cell *matHeaderCellDef> Economy Capacity </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.economyCapacity}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="cargoCapacity">
+                                    <mat-header-cell *matHeaderCellDef> Cargo Capacity </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.cargoCapacity}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="registration">
+                                    <mat-header-cell *matHeaderCellDef> Registration </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.registration}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="countryOfRegistration">
+                                    <mat-header-cell *matHeaderCellDef> Country Of Registration </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.country.countryCode}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="dateOfRegistration">
+                                    <mat-header-cell *matHeaderCellDef> Date Of Registration </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{element.dateOfRegistration | date :  "MM/dd/yyyy"}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="airportCategory">
+                                    <mat-header-cell *matHeaderCellDef> Airport Category </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.airportCategory.categoryName}}
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="maximumFlightHours">
+                                    <mat-header-cell *matHeaderCellDef> Maximum FlightHours </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.maximumFlightHours}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="status">
+                                    <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="actions">
+                                    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        <button mat-icon-button color="primary"
+                                            (click)="isUpdate = true; aircraftInfo = element; show_aircraftList = false;">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="remove(element)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+
+                            </mat-table>
+                        </div>
+
+                        <!-- </div> -->
+                    </div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

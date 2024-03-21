@@ -1,0 +1,474 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Flight Schedule</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="col-md-12" *ngIf="show_flightschedList" style="padding: 1% 2% 3% 2%;">
+
+                            <div class="row">
+                                <div class="col-md-9">
+
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <p style="margin-right: 5%;">
+                                            <mat-form-field>
+                                                <mat-label>Search</mat-label>
+                                                <input matInput placeholder="" (input)="applyFilter($event)"
+                                                    placeholder="" #input>
+                                                <mat-icon matSuffix>search</mat-icon>
+                                                <!-- <mat-hint>Hint</mat-hint> -->
+                                            </mat-form-field>
+                                        </p>
+                                        <button mat-icon-button color="primary"
+                                            (click)="isUpdate = false; show_flightschedList = false; show_createSched = true; schedInfo = {}; fieldArray = [];">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <mat-table [dataSource]="sched_dataSource" class="mat-elevation-z8">
+
+                                <ng-container matColumnDef="id">
+                                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"
+                                        (click)="expandedElement = expandedElement === element ? null : element;">
+                                        {{element.id}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="scheduleName">
+                                    <mat-header-cell *matHeaderCellDef> Schedule Name </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"
+                                        (click)="expandedElement = expandedElement === element ? null : element;">
+                                        {{element.scheduleName}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="periodFrom">
+                                    <mat-header-cell *matHeaderCellDef> Period From </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"
+                                        (click)="expandedElement = expandedElement === element ? null : element;">
+                                        {{element.periodFrom | date :  "MM/dd/yyyy"}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="periodTo">
+                                    <mat-header-cell *matHeaderCellDef> Period To </mat-header-cell>
+                                    <mat-cell *matCellDef="let element"
+                                        (click)="expandedElement = expandedElement === element ? null : element;">
+                                        {{element.periodTo | date :  "MM/dd/yyyy"}} </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="actions">
+                                    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        <button mat-icon-button color="accent"
+                                            (click)="show_flightschedList = false; show_schedCalendar = true; selectSched(element)">
+                                            <mat-icon>visibility</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="primary" (click)="onUpdate(element)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-icon-button color="warn" (click)="remove(element, deleteTmp)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                        <button mat-icon-button>
+                                            <mat-icon>publish</mat-icon>
+                                        </button>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="expandedDetail">
+                                    <mat-cell *matCellDef="let detail">
+                                        <mat-table [dataSource]="detail.element.aircraftTypes"
+                                            style="width: 100%; margin: 1%; border: solid 1px #ddd;">
+                                            <ng-container matColumnDef="id">
+                                                <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.aircraftTypeId}}
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="schedId">
+                                                <mat-header-cell *matHeaderCellDef> Schedule ID
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.airline_ScheduleID}}
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="aircraftType">
+                                                <mat-header-cell *matHeaderCellDef> Aircraft Type
+                                                </mat-header-cell>
+                                                <mat-cell *matCellDef="let element">
+                                                    {{element.aircraftType.aircraftTypeName}}
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="quantity">
+                                                <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.quantity}}
+                                                </mat-cell>
+                                            </ng-container>
+
+
+                                            <mat-header-row *matHeaderRowDef="aircraft_displayedColumns">
+                                            </mat-header-row>
+                                            <mat-row [@rowsAnimation]
+                                                *matRowDef="let row; columns: aircraft_displayedColumns;">
+                                            </mat-row>
+                                        </mat-table>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="title">
+                                    <th mat-header-cell *matHeaderCellDef> Schedule List </th>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="['title']" class="example-first-header-row">
+                                </tr>
+
+                                <mat-header-row *matHeaderRowDef="sched_displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: sched_displayedColumns;" matRipple
+                                    class="element-row" [class.expanded]="expandedElement == row">
+                                </mat-row>
+                                <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+                                    [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'"
+                                    style="overflow: hidden">
+                                </mat-row>
+                            </mat-table>
+
+                        </div>
+
+                        <div class="col-md-8" *ngIf="show_createSched" style="padding: 1% 2% 3% 2%;">
+
+                            <form #schedData="ngForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field class="example-full-width">
+                                            <input matInput placeholder="Schedule Name" name="scheduleName"
+                                                [ngModel]="schedInfo.scheduleName" required>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field color="primary">
+                                            <mat-label>Period From</mat-label>
+                                            <input *ngIf="isUpdate" [readonly]="isUpdate" matInput
+                                                [matDatepicker]="picker1" name="periodFrom"
+                                                [ngModel]="schedInfo.periodFrom" required>
+                                            <input *ngIf="!isUpdate" matInput [matDatepicker]="picker1"
+                                                (click)="picker1.open()" name="periodFrom"
+                                                [ngModel]="schedInfo.periodFrom" required>
+                                            <mat-datepicker-toggle *ngIf="!isUpdate" matSuffix [for]="picker1">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <mat-form-field color="primary">
+                                            <mat-label>Period to</mat-label>
+                                            <input *ngIf="isUpdate" [readonly]="isUpdate" matInput
+                                                [matDatepicker]="picker2" name="periodTo" [ngModel]="schedInfo.periodTo"
+                                                required>
+                                            <input *ngIf="!isUpdate" matInput [matDatepicker]="picker2"
+                                                (click)="picker2.open()" name="periodTo" [ngModel]="schedInfo.periodTo"
+                                                required>
+                                            <mat-datepicker-toggle *ngIf="!isUpdate" matSuffix [for]="picker2">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row" *ngIf="!isUpdate">
+                                        <div class="col-md-6">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Aircraft Type"
+                                                    [(ngModel)]="newAttribute.aircraftTypeId" name="aircraftTypeId">
+                                                    <mat-option *ngFor="let type of aircraftTypes" [value]="type.id">
+                                                        <span
+                                                            style="text-align: left">{{type.aircraftTypeName}}</span><span
+                                                            style="text-align: right">({{type.count}})</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <mat-form-field>
+                                                <input matInput id="newAttributeQuantity"
+                                                    [(ngModel)]="newAttribute.quantity" name="newAttributeQuantity"
+                                                    placeholder="Quantity">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md">
+                                            <button mat-icon-button color="primary" [disabled]="!newAttribute.quantity"
+                                                (click)="addFieldValue()">
+                                                <mat-icon>add</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngFor="let field of fieldArray; let i = index">
+                                        <div class="col-md-6">
+                                            <mat-form-field>
+                                                <input matInput [readonly]="true" [(ngModel)]="field.aircraftTypeName"
+                                                    name="{{field.aircraftTypeName}}" placeholder="Aircraft Type">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <mat-form-field>
+                                                <input matInput [readonly]="isUpdate" [(ngModel)]="field.quantity"
+                                                    name="{{field.quantity}}" placeholder="Quantity">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button mat-icon-button color="warn" (click)="deleteFieldValue(i)"
+                                                *ngIf="!isUpdate">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                (click)="show_createSched = false ;show_flightschedList = true;">
+                                Cancel
+                            </button>
+                            <button mat-raised-button type="submit" class="btn btn-indigo pull-right" *ngIf="!isUpdate"
+                                [disabled]="!schedData.form.valid || fieldArray.length < 1"
+                                class="btn btn-indigo pull-right" (click)="save(schedData, confirmTmp)">
+                                Continue
+                            </button>
+                            <button mat-raised-button type="submit" class="btn btn-indigo pull-right" *ngIf="isUpdate"
+                                [disabled]="!schedData.form.valid" (click)="update(schedData, confirmTmp)">
+                                Update
+                            </button>
+                            <div class="clearfix"></div>
+
+                        </div>
+
+                        <div class="col-md-12" *ngIf="show_schedCalendar" style="padding: 0% 0% 3% 0%;">
+                            <button mat-icon-button (click)="show_flightschedList = true; show_schedCalendar = false">
+                                <mat-icon>arrow_back</mat-icon>
+                            </button>
+                        </div>
+
+                        <div class="col-md-12" *ngIf="show_schedCalendar" style="padding: 0% 2% 3% 2%;">
+                            <full-calendar [options]="calendarOptions"></full-calendar>
+                        </div>
+
+                        <div class="col-md-8" *ngIf="show_flightCalendar" style="padding: 1% 2% 3% 2%;">
+
+                            <form #flightDetails="ngForm">
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <section class="example-section">
+                                            <mat-checkbox class="example-margin" color="primary" name="isReturn"
+                                                [(ngModel)]="flightData.isReturn">
+                                                Return Flight</mat-checkbox>
+                                        </section>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field>
+                                            <input matInput name="outboundFlightNo"
+                                                [ngModel]="flightData.outboundFlightNo" required
+                                                placeholder="Outbound Flight No.">
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6" *ngIf="flightData.isReturn">
+                                        <mat-form-field>
+                                            <input matInput name="inboundFlightNo"
+                                                [ngModel]="flightData.inboundFlightNo" required
+                                                placeholder="Inbound Flight No.">
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Origin</mat-label>
+                                            <mat-select name="airport_OriginID" [ngModel]="flightData.airport_OriginID"
+                                                required>
+                                                <mat-option *ngFor="let ap of airports" [value]="ap.id">
+                                                    {{ap.airportName}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Destination</mat-label>
+                                            <mat-select name="airport_DestinationID"
+                                                [ngModel]="flightData.airport_DestinationID" required>
+                                                <mat-option *ngFor="let ap of airports" [value]="ap.id">
+                                                    {{ap.airportName}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <input matInput placeholder="Block Time" name="blockTime"
+                                                [ngModel]="flightData.blockTime" required aria-label="Block Time"
+                                                [format]="24" [ngxTimepicker]="bt" readonly>
+                                            <ngx-material-timepicker [theme]="darkTheme" #bt
+                                                (closed)="updateTimes('bt',flightDetails);" [appendToInput]="true">
+                                            </ngx-material-timepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <input matInput placeholder="Flying Hours" aria-label="Flying Hours"
+                                                name="flyingHours" [ngModel]="flightData.flyingHours" required
+                                                [format]="24" [ngxTimepicker]="fh" readonly>
+                                            <ngx-material-timepicker [theme]="darkTheme" #fh [appendToInput]="true">
+                                            </ngx-material-timepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md" *ngIf="false">
+                                        <mat-form-field color="primary">
+                                            <input matInput placeholder="Ground Time" aria-label="Ground Time"
+                                                name="groundTime" [ngModel]="flightData.groundTime" required
+                                                [format]="24" [ngxTimepicker]="gt" readonly>
+                                            <ngx-material-timepicker [theme]="darkTheme" #gt [appendToInput]="true">
+                                            </ngx-material-timepicker>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <input matInput placeholder="STD" name="std" [ngModel]="flightData.std"
+                                                required aria-label="STD" [format]="24" [ngxTimepicker]="dt" readonly>
+                                            <ngx-material-timepicker [theme]="darkTheme" #dt
+                                                (closed)="updateTimes('std',flightDetails)" [appendToInput]="true">
+                                            </ngx-material-timepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <input matInput placeholder="STA" aria-label="STA" name="sta" [format]="24"
+                                                [ngModel]="flightData.sta" [ngxTimepicker]="at" readonly>
+                                            <ngx-material-timepicker [theme]="darkTheme" #at
+                                                (closed)="updateTimes('sta',flightDetails);" [appendToInput]="true">
+                                            </ngx-material-timepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <mat-label>Period From</mat-label>
+                                            <input matInput [matDatepicker]="picker1" [max]="maxDate" [min]="minDate"
+                                                (click)="picker1.open()" name="periodFrom"
+                                                [ngModel]="flightData.periodFrom" required>
+                                            <mat-datepicker-toggle matSuffix [for]="picker1">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field color="primary">
+                                            <mat-label>Period to</mat-label>
+                                            <input matInput [matDatepicker]="picker2" [max]="maxDate" [min]="minDate"
+                                                (click)="picker2.open()" name="periodTo" [ngModel]="flightData.periodTo"
+                                                required>
+                                            <mat-datepicker-toggle matSuffix [for]="picker2">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Days</mat-label>
+                                            <mat-select multiple name="days" [ngModel]="flightData.days" required>
+                                                <mat-option *ngFor="let day of daysList" [value]="day.id">
+                                                    {{day.label}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <button mat-icon-button color="warn"
+                                            (click)="deleteFlight(flightData, deleteTmp)" *ngIf="isUpdate">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button mat-raised-button type="button" class="btn btn-danger pull-right"
+                                    (click)="show_flightCalendar = false; show_schedCalendar = true">
+                                    Cancel
+                                </button>
+                                <button mat-raised-button type="button" *ngIf="!isUpdate"
+                                    [disabled]="!flightDetails.form.valid" class="btn btn-indigo pull-right"
+                                    (click)="saveFlightSched(flightDetails, confirmTmp)">
+                                    Continue
+                                </button>
+                                <button mat-raised-button type="button" *ngIf="isUpdate"
+                                    class="btn btn-indigo pull-right"
+                                    (click)="updateFlightSched(flightDetails, confirmTmp)">
+                                    Continue
+                                </button>
+
+                                <div class="clearfix"></div>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #confirmTmp>
+    <p style="font-weight: 600; font-size: 1.1rem;" mat-dialog-title>Confirm Submission</p>
+    <mat-dialog-content class="mat-typography">
+        <p>Please check information before submitting</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-flat-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button style="font-weight: 600;" mat-flat-button type="button" [mat-dialog-close]="true"
+            cdkFocusInitial>Save</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #deleteTmp>
+    <p style="font-weight: 600; font-size: 1.1rem;" mat-dialog-title>Confirm Deletion</p>
+    <mat-dialog-content class="mat-typography">
+        <p>You are about to delete these data</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-flat-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button style="font-weight: 600;" mat-flat-button type="button" [mat-dialog-close]="true"
+            cdkFocusInitial>Delete</button>
+    </mat-dialog-actions>
+</ng-template>

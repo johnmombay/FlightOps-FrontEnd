@@ -1,0 +1,118 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Flight Schedule</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12" style="padding: 0% 2% 3% 2%;">
+                            <full-calendar [options]="flight_CalendarOptions"></full-calendar>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Aircraft Schedule</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12" style="padding: 0% 2% 3% 2%;">
+                            <full-calendar [options]="aircraft_CalendarOptions"></full-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #assignTmp>
+    <p style="font-weight: 600; font-size: 1.1rem;" mat-dialog-title>Assign Aircraft</p>
+    <mat-dialog-content class="mat-typography">
+        <form #assignData="ngForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-select placeholder="Aircraft" [(ngModel)]="assignInfo.id" name="aircraftId" required>
+                            <mat-option *ngFor="let ac of aircrafts" [value]="ac.id">
+                                <span style="text-align: left">{{ac.registration}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md">
+                    <mat-form-field color="primary">
+                        <mat-label>Period From</mat-label>
+                        <input matInput [matDatepicker]="picker1" (click)="picker1.open()" name="From"
+                            [ngModel]="assignInfo.From" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker1">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md">
+                    <mat-form-field color="primary">
+                        <mat-label>Period to</mat-label>
+                        <input matInput [matDatepicker]="picker2" (click)="picker2.open()" name="To"
+                            [ngModel]="assignInfo.To" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker2">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-flat-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button style="font-weight: 600;" mat-flat-button type="button" cdkFocusInitial
+            [disabled]="!assignData.form.valid" (click)="assign(assignData)" [mat-dialog-close]="true">Assign</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #astdTmp>
+    <p style="font-weight: 600; font-size: 1.1rem;" mat-dialog-title>Update Flight</p>
+    <mat-dialog-content class="mat-typography">
+        <form #astdData="ngForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field color="primary">
+                        <input matInput placeholder="ASTD" name="astd" [ngModel]="assignInfo.astd" required
+                            aria-label="ASTD" [format]="24" [ngxTimepicker]="td" readonly>
+                        <ngx-material-timepicker [theme]="darkTheme" #td [appendToInput]="true">
+                        </ngx-material-timepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-flat-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button style="font-weight: 600;" mat-flat-button type="button" cdkFocusInitial
+            [disabled]="!astdData.form.valid" (click)="update(astdData)" [mat-dialog-close]="true">Update</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #confirmTmp>
+    <p style="font-weight: 600; font-size: 1.1rem;" mat-dialog-title>Confirm Submission</p>
+    <mat-dialog-content class="mat-typography">
+        <p>Please check information before submitting</p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-flat-button type="button" [mat-dialog-close]="false">Cancel</button>
+        <button style="font-weight: 600;" mat-flat-button type="button" [mat-dialog-close]="true"
+            cdkFocusInitial>Save</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.3)" size="medium" color="#fff" type="ball-spin-fade"
+    [fullScreen]="true">
+    <p style="color: white"> </p>
+</ngx-spinner>

@@ -1,0 +1,118 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-indigo">
+                        <h4 class="card-title" style="font-weight: 600;">Maintenance Schedule</h4>
+                        <p class="card-category"></p>
+                       
+                    </div>
+                    <div class="card-body" style="padding: 5%, 0%;">
+
+                        <div class="row" *ngIf="show_calendarlist">
+                            <div class="card-body" style="padding: 5%, 0%;">
+
+        
+                            </div>
+                            <div class="col-md-12">
+                                    <full-calendar [options]="calendarOptions"></full-calendar>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8" *ngIf="!show_calendarlist">
+                            <!-- <div class="col-md-8"> -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Add Maintenance Schedule - {{ selectedAircraft }}</h4>
+                                    <!-- <p class="card-category">{{ selectedAircraft }}</p> -->
+                                </div>
+                                <div class="card-body">
+                                    <form #f="ngForm">
+                                        <div class="row">
+                                            <div class="col-md">
+                                                <mat-form-field>
+                                                <mat-select placeholder="Maintenance Code">
+                                                    <mat-option *ngFor="let type of listofMaintenance"
+                                                        [value]="type.id">
+                                                        <span
+                                                            style="text-align: left">{{type.maintenanceCode}}</span>
+                                                            <!-- <span style="text-align: right">({{type.NoOfAircraft}})</span> -->
+                                                    </mat-option>
+                                                </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md">
+                                                <mat-form-field color="primary">
+                                                    <input matInput placeholder="Start Time" name="departureTime" ngModel
+                                                        required aria-label="STD" [format]="24"
+                                                        [ngxTimepicker]="dt" readonly>
+                                                    <ngx-material-timepicker [theme]="darkTheme" #dt 
+                                                        [appendToInput]="true">
+                                                    </ngx-material-timepicker>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md">
+                                                <mat-form-field color="primary">
+                                                    <input matInput placeholder="STA" aria-label="STA"
+                                                        name="arrivalTime" [format]="24" ngModel
+                                                        [ngxTimepicker]="at" readonly >
+                                                    <ngx-material-timepicker [theme]="darkTheme" #at
+                                                        [appendToInput]="true">
+                                                    </ngx-material-timepicker>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <mat-form-field color="primary">
+                                                    <mat-label>Period From</mat-label>
+                                                    <input matInput [matDatepicker]="picker1" 
+                                                        name="periodFrom" ngModel required>
+                                                    <mat-datepicker-toggle matSuffix [for]="picker1">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <mat-form-field color="primary">
+                                                    <mat-label>Period to</mat-label>
+                                                    <input matInput [matDatepicker]="picker2" 
+                                                        name="periodTo" ngModel required>
+                                                    <mat-datepicker-toggle matSuffix [for]="picker2">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </form>
+
+
+
+                                    <br>
+                                    <button mat-raised-button type="submit" class="btn btn-danger pull-right"
+                                        (click)="show_calendarlist = true ;">
+                                        Cancel
+                                    </button>
+                                    <button mat-raised-button type="submit"
+                                       
+                                        class="btn btn-indigo pull-right" (click)="show_calendarlist = true ; saveEvents(f)"
+                                       >
+                                        Save
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>                                    
+
+        </div>
+    </div>
+</div>
